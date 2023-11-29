@@ -1,10 +1,19 @@
 
-Set environment
+Set environment :
+
+#On Mac OS
 python3 -m venv venv
 
-activate os source venv/bin/activate
-activate windows C:\> <venv>\Scripts\activate.bat
+Activate os :
+source venv/bin/activate
 
-Install requirements
+#On Windows
+python -m venv venv
+
+Activate environment :
+venv\Scripts\activate
+
+
+#Install requirements
 
 python -m pip install -r requirements.txt
