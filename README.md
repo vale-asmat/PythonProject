@@ -1,19 +1,25 @@
+## Description
 
-Set environment :
+This is a project that shows the renting price in France.
 
-#On Mac OS
-python3 -m venv venv
+## Features
 
-Activate os :
-source venv/bin/activate
+- ✨ Awesome feature 1
+- 🌟 Exciting feature 2
+- ⚡️ Cool feature 3
 
-#On Windows
-python -m venv venv
+## Getting Started
 
-Activate environment :
-venv\Scripts\activate
+Follow these steps to get started with the project:
+
+1. Clone the repository: `git clone https://github.com/vale-asmat/PythonProject.git`
+2. Create environment
+    On Mac OS: `python3 -m venv venv`
+    Activate the environment: `source venv/bin/activate`
+
+    On Windows: `python -m venv venv`
+    Activate the environment: `venv\Scripts\activate`
+
+3. Install dependencies: `python -m pip install -r requirements.txt`
 
 
-#Install requirements
-
-python -m pip install -r requirements.txt
