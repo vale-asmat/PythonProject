@@ -13,7 +13,7 @@ This is a project that shows the renting price in France.
 Follow these steps to get started with the project:
 
 1. Clone the repository: `git clone https://github.com/vale-asmat/PythonProject.git`
-2. Create environment<br>
+2. Create the environment<br><br>
     On Mac OS: `python3 -m venv venv`
     Activate the environment: `source venv/bin/activate`<br>
 
