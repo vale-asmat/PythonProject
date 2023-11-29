@@ -1,6 +1,6 @@
 ## Description
 
-This is a project that shows the renting price in France.
+This is a project that shows the renting price of housing in France.
 
 ## Features
 
