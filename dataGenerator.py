@@ -3,6 +3,7 @@ import sys
 import os
 import pandas as pd
 import json
+import geopandas as gpd
 
 root_path = sys.path[0]
 def generate_data():
@@ -37,11 +38,11 @@ def generate_data():
 
     return loyers_df
 
-def load_geojson():
+def load_geojson(df):
     '''Loads the geojson file to get the geometry of each commune'''
 
     # Read the geojson file
     with open(os.path.join(root_path,"geojsonfiles",'correspondance-code-insee-code-postal.geojson')) as f:
         geojsondata = json.load(f)
 
-    return geojsondata
+    return geojsondata 

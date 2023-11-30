@@ -4,12 +4,11 @@ import os
 from dash import Dash, html, dash_table, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
-import geopandas as gpd
 import dataGenerator
 
 # Load the data for the dashboard
 loyers_df=dataGenerator.generate_data()
-geojsondata=dataGenerator.load_geojson()
+geojsondata=dataGenerator.load_geojson(loyers_df)
 
 # Initialize the Dash lib
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -160,6 +159,7 @@ app.layout = dbc.Container([
             [
                 dbc.Tab(label="Main", tab_id="main"),
                 dbc.Tab(label="Carte de loyers", tab_id="carte"),
+                dbc.Tab(label="Histogram", tab_id="histogram"),
                 dbc.Tab(label="Comparateur", tab_id="comparateur"),
             ],
             id="tabs",
@@ -254,15 +254,12 @@ def update_map(year_map,type_map):
     and renders the clorophleth accordingly, in order to visualize the data geographically by commune
     """
     subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
-    fig = px.choropleth(data_frame=subset, geojson=geojsondata,locations='INSEE',color='LOYER_EUROM2',
-                     featureidkey="properties.insee_com",
-                   )
-    fig.update_layout(
-        width=1000, height=1000,
-        geo = dict(
-            projection_scale=18,
-            center=dict(lat=46.227638, lon=2.213749),
-        ))
+    fig = px.choropleth_mapbox(subset
+                               , geojson=geojsondata, color='LOYER_EUROM2',
+                           locations='INSEE', featureidkey="properties.insee_com",
+                           center={"lat": 46.227638, "lon": 2.213749},
+                           mapbox_style="carto-positron", zoom=4)
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
 
 @callback(
@@ -286,13 +283,22 @@ def render_tab_content(active_tab):
                     }),
                 html.Hr(),
                 dbc.Row(dash_table.DataTable(id='principal-table' ,data=loyers_df[(loyers_df['TYPE']=='app')&(loyers_df['YEAR']=='2018')].to_dict('records'), page_size=10)),
-                dbc.Row(dcc.Graph(figure={},id='histogram'))
                 ])
         elif active_tab == "carte":
             return html.Div(
                 [dbc.Col([
                 dbc.Row(controls_map_tab),
                 dbc.Row(dcc.Graph(figure={}, id='cloro-map'))
+                    ],style={
+                        "align-items":"center"
+                    }),
+                html.Hr(),
+                ])
+        elif active_tab == "histogram":
+            return html.Div(
+                [dbc.Col([
+                dbc.Col(controls_main_tab),
+                dbc.Row(dcc.Graph(figure={}, id='histogram'))
                     ],style={
                         "align-items":"center"
                     }),
