@@ -45,4 +45,7 @@ def load_geojson(df):
     with open(os.path.join(root_path,"geojsonfiles",'correspondance-code-insee-code-postal.geojson')) as f:
         geojsondata = json.load(f)
 
-    return geojsondata 
+    return geojsondata
+
+def load_school_data():
+    return pd.read_csv('fichierscsv/adresses_ecoles.csv')
