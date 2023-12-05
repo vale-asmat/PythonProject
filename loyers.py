@@ -5,13 +5,16 @@ from dash import Dash, html, dash_table, dcc, callback, Output, Input
 import dash_bootstrap_components as dbc
 import plotly.graph_objects as go
 import dataGenerator
+from dash.exceptions import PreventUpdate
+from dash import callback_context
 
 # Load the data for the dashboard
-loyers_df=dataGenerator.generate_data()
-geojsondata=dataGenerator.load_geojson(loyers_df)
+loyers_df = dataGenerator.generate_data()
+geojsondata = dataGenerator.load_geojson(loyers_df)
+ecole_df = dataGenerator.load_school_data()
 
 # Initialize the Dash lib
-app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP],suppress_callback_exceptions=True)
 
 #Define list of options for the controllers
 yearOptions=loyers_df['YEAR'].unique()
@@ -168,6 +171,43 @@ app.layout = dbc.Container([
     html.Div(id="tab-content", className="p-4")
 ])
 
+# Define the layout for the form
+add_point_form = dbc.Form(
+    [
+        dbc.CardGroup(
+            [
+                dbc.Label("Nom de l'école maternelle"),
+                dbc.Input(id="school-name", type="text"),
+            ]
+        ),
+        dbc.CardGroup(
+            [
+                dbc.Label("Adresse"),
+                dbc.Input(id="school-address", type="text"),
+            ]
+        ),
+        dbc.CardGroup(
+            [
+                dbc.Label("Code postal"),
+                dbc.Input(id="school-zip", type="text"),
+            ]
+        ),
+        dbc.CardGroup(
+            [
+                dbc.Label("Latitude"),
+                dbc.Input(id="school-lat", type="number", step=0.0001),
+            ]
+        ),
+        dbc.CardGroup(
+            [
+                dbc.Label("Longitude"),
+                dbc.Input(id="school-lon", type="number", step=0.0001),
+            ]
+        ),
+        dbc.Button("Ajouter l'école", id="add-school-btn", color="primary", className="mr-1"),
+    ]
+)
+
 # This section will provide the implementation of the functions to buils the interaction of the dashboard
 @callback(
     Output(component_id='controls-and-graph', component_property='figure'),
@@ -262,6 +302,63 @@ def update_map(year_map,type_map):
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
 
+# Add callback for adding points to the map
+# @callback(
+#     Output("cloro-map", "figure"),
+#     [
+#         Input("add-school-btn", "n_clicks"),
+#         Input("year_map", "value"),
+#         Input("type_map", "value"),
+#         Input("school-name", "value"),
+#         Input("school-address", "value"),
+#         Input("school-zip", "value"),
+#         Input("school-lat", "value"),
+#         Input("school-lon", "value"),
+#     ],
+# )
+# def add_school_to_map(n_clicks, year_map, type_map, school_name, school_address, school_zip, school_lat, school_lon):
+#     if n_clicks is None:
+#         raise PreventUpdate
+
+#     # Determine which input triggered the callback
+#     ctx = callback_context
+#     triggered_id = ctx.triggered_id
+#     triggered_prop_id = ctx.triggered_prop_id
+
+#     # Add the new point to the school data only if the button was clicked
+#     if triggered_id == "add-school-btn":
+#         new_school = pd.DataFrame({
+#             "nom": [school_name],
+#             "adresse": [school_address],
+#             "code_postal": [school_zip],
+#             "latitude": [school_lat],
+#             "longitude": [school_lon],
+#         })
+#         school_data = school_data.append(new_school, ignore_index=True)
+
+#     # Update the map
+#     subset = loyers_df[(loyers_df['YEAR'] == year_map) & (loyers_df['TYPE'] == type_map)]
+#     fig = px.choropleth_mapbox(subset
+#                                , geojson=geojsondata, color='LOYER_EUROM2',
+#                                locations='INSEE', featureidkey="properties.insee_com",
+#                                center={"lat": 46.227638, "lon": 2.213749},
+#                                mapbox_style="carto-positron", zoom=4)
+#     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+
+#     # Add the new point to the map if the button was clicked
+#     if triggered_id == "add-school-btn":
+#         fig.add_trace(go.Scattermapbox(
+#             lat=[school_lat],
+#             lon=[school_lon],
+#             mode="markers",
+#             marker=dict(size=10),
+#             text=[school_name],
+#             name="New School",
+#         ))
+
+#     return fig
+
+    
 @callback(
     Output("tab-content", "children"),
     [Input("tabs", "active_tab")],
