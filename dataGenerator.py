@@ -4,8 +4,26 @@ import os
 import pandas as pd
 import json
 import geopandas as gpd
+import re
+import os
+import sys
+
+# Extracting the year of a string and output the string
+def extract_year(input_string):
+    # Define a regular expression pattern for a year (four digits)
+    pattern = re.compile(r'(\d{4})')
+
+    # Search for the pattern in the input string
+    match = re.search(pattern, input_string)
+
+    # If a match is found, return the matched year; otherwise, return None
+    if match:
+        return match.group(1)
+    else:
+        return None
 
 root_path = sys.path[0]
+
 def generate_data():
     '''Loads the data form csv files and returns a dataframe with the information needed'''
 
@@ -14,17 +32,33 @@ def generate_data():
 
     frames=[]
     # Transform each file into a partial dataframe
-    for f in fichiers:
-        partial_df=pd.read_csv(os.path.join(root_path,"fichierscsv",f),encoding='latin1',delimiter=';',decimal=',')
-        partial_df['TYPE']=f[0:f.index('_')]
-        partial_df['YEAR']=f[f.index('_')+1:f.index('_')+5]
-        frames.append(partial_df)
+    csvFolderPath = os.path.join(root_path,"datacsv")
+    listOfFilesInFolderCSV = os.listdir(csvFolderPath)
+    filteredListOfFilesInFolderCSV = {}
+    # Filter the files get a list of the names of the csv input in the folder "datacsv"
+    for file in listOfFilesInFolderCSV:
+        if file.endswith('.csv'):
+            # extracting the date of the string and it to a dictionnary
+            year = extract_year(file)
+            if year:
+                if year not in filteredListOfFilesInFolderCSV:
+                    filteredListOfFilesInFolderCSV[year] = []
+                filteredListOfFilesInFolderCSV[year].append(file)
+    sorted(filteredListOfFilesInFolderCSV)
+    
+    # Getting the path of the csv files and filter the data to get only with the right TYPE and YEAR and append it to frames
+    for folder in filteredListOfFilesInFolderCSV:
+        for file in filteredListOfFilesInFolderCSV[folder]:
+            partial_df=pd.read_csv(os.path.join(root_path,"datacsv",file),encoding='latin1',delimiter=';',decimal=',')
+            partial_df['TYPE']=file[0:file.index('_')]
+            partial_df['YEAR']=file[file.index('_')+1:file.index('_')+5]
+            frames.append(partial_df)
 
     # Build a dataframe taking into account all the partial dataframes loaded
     loyers_df=pd.concat(frames,ignore_index=True)
 
     # Load the name of regions
-    regions_df=pd.read_csv(os.path.join(root_path,"fichierscsv","reg2018.csv"),encoding='latin1',delimiter=',')
+    regions_df=pd.read_csv(os.path.join(root_path,"filecsv","region.csv"),encoding='latin1',delimiter=',')
     regions_df=regions_df.rename(columns={'REGION,C,2':'REG','NCC,C,70':'NOM_REGION'})
 
     loyers_df=loyers_df.merge(regions_df,on=['REG'])
@@ -48,4 +82,4 @@ def load_geojson(df):
     return geojsondata
 
 def load_school_data():
-    return pd.read_csv('fichierscsv/adresses_ecoles.csv')
+    return pd.read_csv('datacsv/adresses_ecoles.csv')
