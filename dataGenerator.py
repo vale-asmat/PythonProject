@@ -68,15 +68,16 @@ def generate_data():
     loyers_df=loyers_df[['NOM','INSEE','DEP','REG','LOYER_EUROM2','TYPE','YEAR','NOM_REGION']]
     # Transform the INSEE code for each row to a string in order to make the relation with a geojsonfile
     loyers_df['INSEE']=loyers_df['INSEE'].astype(str)
+    loyers_df['DEP']=loyers_df['DEP'].astype(str)
     loyers_df['INSEE']=loyers_df['INSEE'].str.zfill(5)
-
     return loyers_df
 
 def load_geojson(df):
     '''Loads the geojson file to get the geometry of each commune'''
 
     # Read the geojson file
-    with open(os.path.join(root_path,"geojsonfiles",'correspondance-code-insee-code-postal.geojson')) as f:
+    #with open(os.path.join(root_path,"geojsonfiles",'correspondance-code-insee-code-postal.geojson')) as f:
+    with open(os.path.join(root_path,"geojsonfiles",'departements-avec-outre-mer.geojson')) as f:
         geojsondata = json.load(f)
 
     return geojsondata
