@@ -336,11 +336,8 @@ def update_map(year_map,type_map,dep_map):
     Input(component_id='dep_map', component_property='value'),
 )     
 def update_map_dep(year_map,type_map,dep_map):
-    if (dep_map=='' or dep_map==None):
-        subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
-    else:
+    if (dep_map!='' or dep_map!=None):
         subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['DEP']==dep_map)]
-    
     fig = px.choropleth(subset
                             , geojson=geojsondatacommune, color='LOYER_EUROM2',
                             locations='INSEE', featureidkey="properties.insee_com",
