@@ -11,6 +11,7 @@ from dash import callback_context
 # Load the data for the dashboard
 loyers_df = dataGenerator.generate_data()
 geojsondata = dataGenerator.load_geojson(loyers_df)
+geojsondatacommune = dataGenerator.load_geojsoncommune(loyers_df)
 ecole_df = dataGenerator.load_school_data()
 
 # Initialize the Dash lib
@@ -19,6 +20,7 @@ app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP],suppress_callback_excepti
 #Define list of options for the controllers
 yearOptions=loyers_df['YEAR'].unique()
 regionOptions=loyers_df['NOM_REGION'].unique()
+depOptions=loyers_df['DEP'].unique()
 
 # Define the radio buttons style for the controller
 radio_buttons_type=[
@@ -96,6 +98,16 @@ controls_map_tab=dbc.Card(
                     id="year_map",
                     options=yearOptions,
                     value='2018'
+                )
+            ]
+        ),
+        html.Div(
+            [
+                dbc.Label("Département"),
+                dcc.Dropdown(
+                    id="dep_map",
+                    options=depOptions,
+                    value='---'
                 )
             ]
         ),
@@ -287,27 +299,45 @@ def update_comp_graph(type_c,region_1,region_2,year_c):
     Output(component_id='cloro-map', component_property='figure'),
     Input(component_id='year_map', component_property='value'),
     Input(component_id='type_map', component_property='value'),
+    Input(component_id='dep_map', component_property='value'),
 )
-def update_map(year_map,type_map):
+def update_map(year_map,type_map,dep_map):
     """
     This callback takes the 'type'and 'year' properties as input, 
     and renders the clorophleth accordingly, in order to visualize the data geographically by commune
     """
     #subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['NOM_REGION']==reg_map)]
-    subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
     dep_list=[]
-    for dep in subset['DEP'].unique():
-        row=[dep,subset[subset['DEP']==dep]['LOYER_EUROM2'].mean()]
-        dep_list.append(row)
-    dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2'])
-    fig = px.choropleth_mapbox(dep_df
-                               , geojson=geojsondata, color='LOYER_EUROM2',
-                           #locations='INSEE', featureidkey="properties.insee_com",
-                           locations='DEP', featureidkey="properties.code",
-                           center={"lat": 46.227638, "lon": 2.213749},
-                           mapbox_style="carto-positron", zoom=4)
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-    return fig
+    if dep_map=='---':
+        subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
+        for dep in subset['DEP'].unique():
+            row=[dep,subset[subset['DEP']==dep]['LOYER_EUROM2'].mean()]
+            dep_list.append(row)
+        dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2'])
+        fig = px.choropleth_mapbox(dep_df
+                                , geojson=geojsondata, color='LOYER_EUROM2',
+                            #locations='INSEE', featureidkey="properties.insee_com",
+                            locations='DEP', featureidkey="properties.code",
+                            center={"lat": 46.227638, "lon": 2.213749},
+                            range_color=(0,20),
+                            labels={"LOYER_EUROM2":"Loyer x m2 en euros","DEP":"Département"},
+                            mapbox_style="carto-positron", zoom=4)
+        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        return fig
+    else:
+        subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['DEP']==dep_map)]
+        fig = px.choropleth_mapbox(subset
+                                , geojson=geojsondatacommune, color='LOYER_EUROM2',
+                            locations='INSEE', featureidkey="properties.insee_com",
+                            center={"lat": 46.227638, "lon": 2.213749},
+                            range_color=(0,20),
+                            labels={"LOYER_EUROM2":"Loyer x m2 en euros","INSEE":"Commune"},
+                            mapbox_style="carto-positron",zoom=4)
+        fig.update_geos(fitbounds="locations")
+        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+        return fig
+    
+    
 
 # Add callback for adding points to the map
 # @callback(
