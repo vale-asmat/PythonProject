@@ -107,7 +107,7 @@ controls_map_tab=dbc.Card(
                 dcc.Dropdown(
                     id="dep_map",
                     options=depOptions,
-                    value='---'
+                    value=''
                 )
             ]
         ),
@@ -308,13 +308,16 @@ def update_map(year_map,type_map,dep_map):
     """
     #subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['NOM_REGION']==reg_map)]
     dep_list=[]
-    if dep_map=='---':
+    if (dep_map=='' or dep_map==None):
         subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
-        for dep in subset['DEP'].unique():
+    else:
+        subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['DEP']==dep_map)]
+    
+    for dep in subset['DEP'].unique():
             row=[dep,subset[subset['DEP']==dep]['LOYER_EUROM2'].mean()]
             dep_list.append(row)
-        dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2'])
-        fig = px.choropleth_mapbox(dep_df
+    dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2'])
+    fig = px.choropleth_mapbox(dep_df
                                 , geojson=geojsondata, color='LOYER_EUROM2',
                             #locations='INSEE', featureidkey="properties.insee_com",
                             locations='DEP', featureidkey="properties.code",
@@ -322,21 +325,34 @@ def update_map(year_map,type_map,dep_map):
                             range_color=(0,20),
                             labels={"LOYER_EUROM2":"Loyer x m2 en euros","DEP":"Département"},
                             mapbox_style="carto-positron", zoom=4)
-        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-        return fig
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    return fig
+
+# TODO: it takes a lot of time to load, find a solution to that
+@callback(
+    Output(component_id='cloro-map-dep', component_property='figure'),
+    Input(component_id='year_map', component_property='value'),
+    Input(component_id='type_map', component_property='value'),
+    Input(component_id='dep_map', component_property='value'),
+)     
+def update_map_dep(year_map,type_map,dep_map):
+    if (dep_map=='' or dep_map==None):
+        subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
     else:
         subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['DEP']==dep_map)]
-        fig = px.choropleth_mapbox(subset
-                                , geojson=geojsondatacommune, color='LOYER_EUROM2',
+    
+    fig = px.choropleth(subset
+                            , geojson=geojsondatacommune, color='LOYER_EUROM2',
                             locations='INSEE', featureidkey="properties.insee_com",
                             center={"lat": 46.227638, "lon": 2.213749},
                             range_color=(0,20),
                             labels={"LOYER_EUROM2":"Loyer x m2 en euros","INSEE":"Commune"},
-                            mapbox_style="carto-positron",zoom=4)
-        fig.update_geos(fitbounds="locations")
-        fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
-        return fig
-    
+                            projection="natural earth",
+                            scope='europe'
+                            )
+    fig.update_geos(fitbounds="locations")
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    return fig
     
 
 # Add callback for adding points to the map
@@ -422,7 +438,9 @@ def render_tab_content(active_tab):
             return html.Div(
                 [dbc.Col([
                 dbc.Row(controls_map_tab),
-                dbc.Row(dcc.Graph(figure={}, id='cloro-map'))
+                dbc.Row(
+                    [dbc.Col(dcc.Graph(figure={}, id='cloro-map'),md=7),
+                    dbc.Col(dcc.Graph(figure={}, id='cloro-map-dep'))])
                     ],style={
                         "align-items":"center"
                     }),
