@@ -293,10 +293,17 @@ def update_map(year_map,type_map):
     This callback takes the 'type'and 'year' properties as input, 
     and renders the clorophleth accordingly, in order to visualize the data geographically by commune
     """
+    #subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['NOM_REGION']==reg_map)]
     subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
-    fig = px.choropleth_mapbox(subset
+    dep_list=[]
+    for dep in subset['DEP'].unique():
+        row=[dep,subset[subset['DEP']==dep]['LOYER_EUROM2'].mean()]
+        dep_list.append(row)
+    dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2'])
+    fig = px.choropleth_mapbox(dep_df
                                , geojson=geojsondata, color='LOYER_EUROM2',
-                           locations='INSEE', featureidkey="properties.insee_com",
+                           #locations='INSEE', featureidkey="properties.insee_com",
+                           locations='DEP', featureidkey="properties.code",
                            center={"lat": 46.227638, "lon": 2.213749},
                            mapbox_style="carto-positron", zoom=4)
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
