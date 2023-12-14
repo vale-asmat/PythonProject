@@ -20,7 +20,9 @@ app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP],suppress_callback_excepti
 #Define list of options for the controllers
 yearOptions=loyers_df['YEAR'].unique()
 regionOptions=loyers_df['NOM_REGION'].unique()
-depOptions=loyers_df['DEP'].unique()
+depOptions=[]
+for d in loyers_df['DEP'].unique():
+    depOptions.append({'label':d+' - '+loyers_df[loyers_df['DEP']==d]['NOM_DEP'].unique()[0],'value':d})
 
 # Define the radio buttons style for the controller
 radio_buttons_type=[
@@ -304,9 +306,10 @@ def update_comp_graph(type_c,region_1,region_2,year_c):
 def update_map(year_map,type_map,dep_map):
     """
     This callback takes the 'type'and 'year' properties as input, 
-    and renders the clorophleth accordingly, in order to visualize the data geographically by commune
+    and renders the clorophleth accordingly, in order to visualize the data geographically by department
+    If any department is selected, it displays the whole map and the prices by department, if one department is
+    selected, it will only highlight the selected department
     """
-    #subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['NOM_REGION']==reg_map)]
     dep_list=[]
     if (dep_map=='' or dep_map==None):
         subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)]
@@ -314,16 +317,16 @@ def update_map(year_map,type_map,dep_map):
         subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['DEP']==dep_map)]
     
     for dep in subset['DEP'].unique():
-            row=[dep,subset[subset['DEP']==dep]['LOYER_EUROM2'].mean()]
+            row=[dep,subset[subset['DEP']==dep]['LOYER_EUROM2'].mean(),subset[subset['DEP']==dep]['NOM_REGION'].unique()[0]]
             dep_list.append(row)
-    dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2'])
+    dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2','NOM_REGION'])
     fig = px.choropleth_mapbox(dep_df
                                 , geojson=geojsondata, color='LOYER_EUROM2',
-                            #locations='INSEE', featureidkey="properties.insee_com",
                             locations='DEP', featureidkey="properties.code",
                             center={"lat": 46.227638, "lon": 2.213749},
                             range_color=(0,20),
-                            labels={"LOYER_EUROM2":"Loyer x m2 en euros","DEP":"Département"},
+                            hover_data=['LOYER_EUROM2','DEP','NOM_REGION'],
+                            labels={"LOYER_EUROM2":"Loyer x m2 en euros","DEP":"Département","NOM_REGION":"Région"},
                             mapbox_style="carto-positron", zoom=4)
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
@@ -336,6 +339,13 @@ def update_map(year_map,type_map,dep_map):
     Input(component_id='dep_map', component_property='value'),
 )     
 def update_map_dep(year_map,type_map,dep_map):
+    """
+    This callback takes the 'type'and 'year' and 'department' properties as input, 
+    and renders the clorophleth accordingly, in order to visualize the data geographically by commune in 
+    an specific department
+    If any department is selected, it displays a blank map, if one department is
+    selected, it will only zoom to the deparment and display the prices by each commune
+    """
     if (dep_map!='' or dep_map!=None):
         subset=loyers_df[(loyers_df['YEAR']==year_map)&(loyers_df['TYPE']==type_map)&(loyers_df['DEP']==dep_map)]
     fig = px.choropleth(subset
@@ -347,7 +357,7 @@ def update_map_dep(year_map,type_map,dep_map):
                             projection="natural earth",
                             scope='europe'
                             )
-    fig.update_geos(fitbounds="locations")
+    fig.update_geos(fitbounds="locations", visible=False)
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
     
