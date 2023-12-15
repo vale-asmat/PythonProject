@@ -23,6 +23,7 @@ regionOptions=loyers_df['NOM_REGION'].unique()
 depOptions=[]
 for d in loyers_df['DEP'].unique():
     depOptions.append({'label':d+' - '+loyers_df[loyers_df['DEP']==d]['NOM_DEP'].unique()[0],'value':d})
+depOptions = sorted(depOptions, key=lambda x: x['label'])
 
 # Define the radio buttons style for the controller
 radio_buttons_type=[
@@ -185,43 +186,6 @@ app.layout = dbc.Container([
     html.Div(id="tab-content", className="p-4")
 ])
 
-# Define the layout for the form
-add_point_form = dbc.Form(
-    [
-        dbc.CardGroup(
-            [
-                dbc.Label("Nom de l'école maternelle"),
-                dbc.Input(id="school-name", type="text"),
-            ]
-        ),
-        dbc.CardGroup(
-            [
-                dbc.Label("Adresse"),
-                dbc.Input(id="school-address", type="text"),
-            ]
-        ),
-        dbc.CardGroup(
-            [
-                dbc.Label("Code postal"),
-                dbc.Input(id="school-zip", type="text"),
-            ]
-        ),
-        dbc.CardGroup(
-            [
-                dbc.Label("Latitude"),
-                dbc.Input(id="school-lat", type="number", step=0.0001),
-            ]
-        ),
-        dbc.CardGroup(
-            [
-                dbc.Label("Longitude"),
-                dbc.Input(id="school-lon", type="number", step=0.0001),
-            ]
-        ),
-        dbc.Button("Ajouter l'école", id="add-school-btn", color="primary", className="mr-1"),
-    ]
-)
-
 # This section will provide the implementation of the functions to buils the interaction of the dashboard
 @callback(
     Output(component_id='controls-and-graph', component_property='figure'),
@@ -240,7 +204,9 @@ def update_graph(type,year,region):
                hover_data=['INSEE','NOM'], # Displaying this as part of the hover data to identify each point
                labels={
                    "DEP":"Département",
-                   "LOYER_EUROM2":"Loyer par m2 (euros)"
+                   "LOYER_EUROM2":"Loyer par m2 (euros)",
+                   "INSEE":"Code Postal",
+                   "NOM":"Nom"
                }
     )
     return fig
@@ -272,7 +238,8 @@ def update_histogram(type,year,region):
     and renders the histogram with the applied filters
     """
     filter_df=loyers_df[(loyers_df['TYPE']==type)&(loyers_df['YEAR']==year)&(loyers_df['NOM_REGION']==region)]
-    fig = px.histogram(filter_df, x='LOYER_EUROM2',marginal="box")
+    fig = px.histogram(filter_df, x='LOYER_EUROM2',marginal="box", labels={"LOYER_EUROM2":"Loyer x m2 en euros"})
+    fig.update_yaxes(title_text = "Nombre de communes", row=1, col=1)
     return fig
 
 
@@ -291,10 +258,9 @@ def update_comp_graph(type_c,region_1,region_2,year_c):
     filter_df1=loyers_df[(loyers_df['TYPE']==type_c)&(loyers_df['YEAR']==year_c)&((loyers_df['NOM_REGION']==region_1))]
     filter_df2=loyers_df[(loyers_df['TYPE']==type_c)&(loyers_df['YEAR']==year_c)&((loyers_df['NOM_REGION']==region_2))]
     fig = go.Figure()
-    fig.add_trace(go.Box(y=filter_df1['LOYER_EUROM2'],name=region_1)
-               )
-    fig.add_trace(go.Box(y=filter_df2['LOYER_EUROM2'],name=region_2)
-               )
+    fig.add_trace(go.Box(y=filter_df1['LOYER_EUROM2'],name=region_1, hovertemplate='Loyer x m2 en euros : %{y}<extra></extra>'))
+    fig.add_trace(go.Box(y=filter_df2['LOYER_EUROM2'],name=region_2, hovertemplate='Loyer x m2 en euros : %{y}<extra></extra>'))
+    fig.update_yaxes(title_text = "Loyer x m2 en euros")
     return fig
 
 # TODO: it takes a lot of time to load, find a solution to that
@@ -363,67 +329,7 @@ def update_map_dep(year_map,type_map,dep_map):
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
     
-@callback(Output("loading-output-1", "children"), Input("dep_map", "value"))
-def input_triggers_spinner(value):
-    return value
 
-# Add callback for adding points to the map
-# @callback(
-#     Output("cloro-map", "figure"),
-#     [
-#         Input("add-school-btn", "n_clicks"),
-#         Input("year_map", "value"),
-#         Input("type_map", "value"),
-#         Input("school-name", "value"),
-#         Input("school-address", "value"),
-#         Input("school-zip", "value"),
-#         Input("school-lat", "value"),
-#         Input("school-lon", "value"),
-#     ],
-# )
-# def add_school_to_map(n_clicks, year_map, type_map, school_name, school_address, school_zip, school_lat, school_lon):
-#     if n_clicks is None:
-#         raise PreventUpdate
-
-#     # Determine which input triggered the callback
-#     ctx = callback_context
-#     triggered_id = ctx.triggered_id
-#     triggered_prop_id = ctx.triggered_prop_id
-
-#     # Add the new point to the school data only if the button was clicked
-#     if triggered_id == "add-school-btn":
-#         new_school = pd.DataFrame({
-#             "nom": [school_name],
-#             "adresse": [school_address],
-#             "code_postal": [school_zip],
-#             "latitude": [school_lat],
-#             "longitude": [school_lon],
-#         })
-#         school_data = school_data.append(new_school, ignore_index=True)
-
-#     # Update the map
-#     subset = loyers_df[(loyers_df['YEAR'] == year_map) & (loyers_df['TYPE'] == type_map)]
-#     fig = px.choropleth_mapbox(subset
-#                                , geojson=geojsondata, color='LOYER_EUROM2',
-#                                locations='INSEE', featureidkey="properties.insee_com",
-#                                center={"lat": 46.227638, "lon": 2.213749},
-#                                mapbox_style="carto-positron", zoom=4)
-#     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-
-#     # Add the new point to the map if the button was clicked
-#     if triggered_id == "add-school-btn":
-#         fig.add_trace(go.Scattermapbox(
-#             lat=[school_lat],
-#             lon=[school_lon],
-#             mode="markers",
-#             marker=dict(size=10),
-#             text=[school_name],
-#             name="New School",
-#         ))
-
-#     return fig
-
-    
 @callback(
     Output("tab-content", "children"),
     [Input("tabs", "active_tab")],
