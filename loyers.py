@@ -236,7 +236,7 @@ def update_graph(type,year,region):
     """
     filter_df=loyers_df[(loyers_df['TYPE']==type)&(loyers_df['YEAR']==year)&(loyers_df['NOM_REGION']==region)]
     fig=px.box(filter_df, y="DEP", x="LOYER_EUROM2",
-               points='all', # Show all the points to know the Insee code of each point
+               #points='all', # Show all the points to know the Insee code of each point
                hover_data=['INSEE','NOM'], # Displaying this as part of the hover data to identify each point
                labels={
                    "DEP":"Département",
@@ -257,6 +257,7 @@ def update_table(type,year,region):
     and renders the table with the actual data if the user needs to see in depth each commune
     """
     filter_df=loyers_df[(loyers_df['TYPE']==type)&(loyers_df['YEAR']==year)&(loyers_df['NOM_REGION']==region)]
+    filter_df=filter_df[['NOM','INSEE','LOYER_EUROM2']]
     return filter_df.to_dict('records')
 
 @callback(
@@ -353,7 +354,8 @@ def update_map_dep(year_map,type_map,dep_map):
                             locations='INSEE', featureidkey="properties.insee_com",
                             center={"lat": 46.227638, "lon": 2.213749},
                             range_color=(0,20),
-                            labels={"LOYER_EUROM2":"Loyer x m2 en euros","INSEE":"Commune"},
+                            hover_data=['LOYER_EUROM2','INSEE','NOM'],
+                            labels={"LOYER_EUROM2":"Loyer x m2 en euros","INSEE":"Code INSEE","NOM":"Commune"},
                             projection="natural earth",
                             scope='europe'
                             )
@@ -361,6 +363,9 @@ def update_map_dep(year_map,type_map,dep_map):
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
     
+@callback(Output("loading-output-1", "children"), Input("dep_map", "value"))
+def input_triggers_spinner(value):
+    return value
 
 # Add callback for adding points to the map
 # @callback(
@@ -434,20 +439,52 @@ def render_tab_content(active_tab):
             return html.Div(
                 [dbc.Row([
                 dbc.Col(controls_main_tab,md=4),
-                dbc.Col(dcc.Graph(figure={}, id='controls-and-graph'))
+                dbc.Col(
+                    dcc.Loading(
+                            id="loading-1",
+                            type="default",
+                            children=dcc.Graph(figure={}, id='controls-and-graph')
+                        ),
+                    )
                     ],style={
                         "align-items":"center"
                     }),
                 html.Hr(),
-                dbc.Row(dash_table.DataTable(id='principal-table' ,data=loyers_df[(loyers_df['TYPE']=='app')&(loyers_df['YEAR']=='2018')].to_dict('records'), page_size=10)),
+                dbc.Row(dash_table.DataTable(id='principal-table' ,data=loyers_df[(loyers_df['TYPE']=='app')&(loyers_df['YEAR']=='2018')].to_dict('records'), page_size=10,
+                                             filter_action='native',
+                                             sort_action='native',
+                                             columns=[
+                                                    {'name': 'Nom de Commune', 'id': 'NOM', 'type': 'text'},
+                                                    {'name': 'Code Postal', 'id': 'INSEE', 'type': 'text'},
+                                                    {'name': 'Loyer par m2 en euros', 'id': 'LOYER_EUROM2', 'type': 'numeric'},
+                                                ],
+                                             )),
                 ])
         elif active_tab == "carte":
             return html.Div(
                 [dbc.Col([
                 dbc.Row(controls_map_tab),
                 dbc.Row(
-                    [dbc.Col(dcc.Graph(figure={}, id='cloro-map'),md=7),
-                    dbc.Col(dcc.Graph(figure={}, id='cloro-map-dep'))])
+                    [dbc.Col([
+                        html.Br(),
+                        dbc.Row(html.H3("Map des loyers par département")),
+                        html.Br(),
+                        dcc.Loading(
+                            id="loading-1",
+                            type="default",
+                            children=dcc.Graph(figure={}, id='cloro-map')
+                        ),
+                    ],md=7),
+                    dbc.Col([
+                        html.Br(),
+                        dbc.Row(html.H3("Map des loyers par commune")),
+                        html.Br(),
+                        dcc.Loading(
+                            id="loading-1",
+                            type="default",
+                            children=dcc.Graph(figure={}, id='cloro-map-dep')
+                        ),
+                    ])])
                     ],style={
                         "align-items":"center"
                     }),
