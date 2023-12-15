@@ -23,3 +23,6 @@ Follow these steps to get started with the project:
 3. Install dependencies : `python -m pip install -r requirements.txt`
 
 
+## Sources
+
+- https://www.data.gouv.fr/fr/datasets/departements-de-france/
