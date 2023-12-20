@@ -261,7 +261,7 @@ def update_comp_graph(type_c,region_1,region_2,year_c):
     fig = go.Figure()
     fig.add_trace(go.Box(x=filter_df1['LOYER_EUROM2'],name=region_1, hovertemplate='Loyer x m2 en euros : %{x}<extra></extra>'))
     fig.add_trace(go.Box(x=filter_df2['LOYER_EUROM2'],name=region_2, hovertemplate='Loyer x m2 en euros : %{x}<extra></extra>'))
-    fig.update_yaxes(title_text = "Loyer x m2 en euros")
+    fig.update_xaxes(title_text = "Loyer x m2 en euros")
     return fig
 
 @callback(
