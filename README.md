@@ -2,12 +2,6 @@
 
 This is a project that shows the renting price of housing in France.
 
-## Features
-
-- ✨ Awesome feature 1
-- 🌟 Exciting feature 2
-- ⚡️ Cool feature 3
-
 ## Getting Started
 
 Follow these steps to get started with the project:
@@ -22,6 +16,13 @@ Follow these steps to get started with the project:
 
 3. Install dependencies : `python -m pip install -r requirements.txt`
 
+
+## Pages
+
+- ⭐ Home
+- 🌍 Map of the pricing
+- 📊 Histogram
+- 🔍 Comparator by region
 
 ## Sources
 
