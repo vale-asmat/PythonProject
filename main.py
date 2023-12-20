@@ -13,6 +13,7 @@ loyers_df = dataGenerator.generate_data()
 geojsondata = dataGenerator.load_geojson(loyers_df)
 geojsondatacommune = dataGenerator.load_geojsoncommune(loyers_df)
 ecole_df = dataGenerator.load_school_data()
+wellbeing_df=dataGenerator.load_wellbeing_data()
 
 # Initialize the Dash lib
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP],suppress_callback_exceptions=True)
@@ -258,12 +259,30 @@ def update_comp_graph(type_c,region_1,region_2,year_c):
     filter_df1=loyers_df[(loyers_df['TYPE']==type_c)&(loyers_df['YEAR']==year_c)&((loyers_df['NOM_REGION']==region_1))]
     filter_df2=loyers_df[(loyers_df['TYPE']==type_c)&(loyers_df['YEAR']==year_c)&((loyers_df['NOM_REGION']==region_2))]
     fig = go.Figure()
-    fig.add_trace(go.Box(y=filter_df1['LOYER_EUROM2'],name=region_1, hovertemplate='Loyer x m2 en euros : %{y}<extra></extra>'))
-    fig.add_trace(go.Box(y=filter_df2['LOYER_EUROM2'],name=region_2, hovertemplate='Loyer x m2 en euros : %{y}<extra></extra>'))
+    fig.add_trace(go.Box(x=filter_df1['LOYER_EUROM2'],name=region_1, hovertemplate='Loyer x m2 en euros : %{x}<extra></extra>'))
+    fig.add_trace(go.Box(x=filter_df2['LOYER_EUROM2'],name=region_2, hovertemplate='Loyer x m2 en euros : %{x}<extra></extra>'))
     fig.update_yaxes(title_text = "Loyer x m2 en euros")
     return fig
 
-# TODO: it takes a lot of time to load, find a solution to that
+@callback(
+    Output(component_id='comparison-oecd', component_property='figure'),
+    Input(component_id='region_1', component_property='value'),
+    Input(component_id='region_2', component_property='value'),
+)
+def update_comp_oecd(region_1,region_2):
+    """
+    This callback takes two 'region' properties as input, 
+    and renders the boxplot of each two regions accordingly, in order to visualize and compare them
+    taking into account the oecd regional notes (quality of life)
+    """
+    selected1_df=wellbeing_df[(wellbeing_df['NOM_REGION']==region_1)|(wellbeing_df['NOM_REGION']==region_2)]
+    fig=px.bar(selected1_df,x='NOM_REGION',
+               barmode='group',
+               y=['EDUCATION','TRAVAIL','REVENUS','SECURITE','SANTE','COMMUNAUTE','QUALITE DE VIE'],
+               labels={"NOM_REGION":"Region","value":"Note","variable":"Critère"},)
+    
+    return fig
+
 @callback(
     Output(component_id='cloro-map', component_property='figure'),
     Input(component_id='year_map', component_property='value'),
@@ -298,7 +317,6 @@ def update_map(year_map,type_map,dep_map):
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     return fig
 
-# TODO: it takes a lot of time to load, find a solution to that
 @callback(
     Output(component_id='cloro-map-dep', component_property='figure'),
     Input(component_id='year_map', component_property='value'),
@@ -412,6 +430,11 @@ def render_tab_content(active_tab):
             graph=[
                 dbc.Row(controls_comparison_graph),
                 dbc.Row([dbc.Col(dcc.Graph(figure={}, id='comparison-graph'))]),
+                dbc.Row([
+                    dbc.Col([
+                        html.Div("Chaque région est mesurée sur des sujets importants pour le bien-être selon l'OECD. Les valeurs des indicateurs sont exprimées sous forme de score compris entre 0 et 10. Un score élevé indique une meilleure performance par rapport aux autres régions."),
+                        dcc.Graph(figure={},id='comparison-oecd')]),
+                ])
                 ]
             return dbc.Col(graph)
     return "No tab selected"

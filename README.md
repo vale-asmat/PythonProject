@@ -26,3 +26,4 @@ Follow these steps to get started with the project:
 ## Sources
 
 - https://www.data.gouv.fr/fr/datasets/departements-de-france/
+- https://www.oecdregionalwellbeing.org/FRH.html
