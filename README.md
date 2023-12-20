@@ -1,4 +1,4 @@
-## Description
+![MapRentingPrice2](https://github.com/vale-asmat/PythonProject/assets/115636552/cfb1bd0b-21ba-4ef1-ade6-7e4dc85eb7f5)## Description
 
 This is a project that shows the renting price of housing in France.
 
@@ -26,13 +26,14 @@ Follow these steps to install  the project:
 ## Pages
 
 - ⭐ Home :
-      
+      ![HomePage](https://github.com/vale-asmat/PythonProject/assets/115636552/68c77d5d-4ad8-415f-8e44-17730591fed6)
 - 🌍 Map of the pricing :
-    
+    ![MapRentingPrice](https://github.com/vale-asmat/PythonProject/assets/115636552/12a0bc5a-aeed-4bc5-8014-cfeebe46197e)
+    ![MapRentingPrice2](https://github.com/vale-asmat/PythonProject/assets/115636552/58bad106-d3bb-4dc8-92a9-e16489c65366)
 - 📊 Histogram :
       
 - 🔍 Comparator by region :
-      
+    ![Comparator](https://github.com/vale-asmat/PythonProject/assets/115636552/ade8c26e-088e-4d61-947b-5493efd30ecf)
 
 ## Sources
 
