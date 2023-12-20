@@ -176,10 +176,10 @@ app.layout = dbc.Container([
     
     dbc.Tabs(
             [
-                dbc.Tab(label="Main", tab_id="main"),
-                dbc.Tab(label="Carte de loyers", tab_id="carte"),
-                dbc.Tab(label="Histogram", tab_id="histogram"),
-                dbc.Tab(label="Comparateur", tab_id="comparateur"),
+                dbc.Tab(label="Accueil 	\U00002B50", tab_id="main"),
+                dbc.Tab(label="Carte de loyers \U0001F30D", tab_id="carte"),
+                dbc.Tab(label="Histogramme \U0001F4CA", tab_id="histogram"),
+                dbc.Tab(label="Comparateur \U0001F50D", tab_id="comparateur"),
             ],
             id="tabs",
             active_tab="main",
@@ -187,7 +187,7 @@ app.layout = dbc.Container([
     html.Div(id="tab-content", className="p-4")
 ])
 
-# This section will provide the implementation of the functions to buils the interaction of the dashboard
+# This section will provide the implementation of the functions to build the interaction of the dashboard
 @callback(
     Output(component_id='controls-and-graph', component_property='figure'),
     Input(component_id='type', component_property='value'),
