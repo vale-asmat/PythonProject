@@ -4,10 +4,12 @@ This is a project that shows the renting price of housing in France.
 
 ## Getting Started
 
-Follow these steps to get started with the project:
+Follow these steps to install  the project:
 
 1. Clone the repository : `git clone https://github.com/vale-asmat/PythonProject.git`
 2. Create the environment :<br><br>
+
+
     On Mac OS: `python3 -m venv venv`
     Activate the environment : `source venv/bin/activate`<br>
 
@@ -27,3 +29,6 @@ Follow these steps to get started with the project:
 ## Sources
 
 - https://www.data.gouv.fr/fr/datasets/departements-de-france/
+- https://www.data.gouv.fr/fr/datasets/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2018/#/resources
+- https://www.data.gouv.fr/fr/datasets/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2022/#/resources
+- https://www.insee.fr/fr/information/3363419#titre-bloc-26
