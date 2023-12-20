@@ -18,13 +18,21 @@ Follow these steps to install  the project:
 
 3. Install dependencies : `python -m pip install -r requirements.txt`
 
+4. Launch python file named `main.py`
+
+5. Access the dashboard at `http://127.0.0.1:8050/`
+
 
 ## Pages
 
-- ⭐ Home
-- 🌍 Map of the pricing
-- 📊 Histogram
-- 🔍 Comparator by region
+- ⭐ Home :
+      
+- 🌍 Map of the pricing :
+    
+- 📊 Histogram :
+      
+- 🔍 Comparator by region :
+      
 
 ## Sources
 
