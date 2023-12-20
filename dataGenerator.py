@@ -77,7 +77,6 @@ def generate_data():
     loyers_df=loyers_df.rename(columns={'loypredm2':'LOYER_EUROM2','LIBGEO':'NOM'})
     loyers_df=loyers_df[['NOM','INSEE','DEP','REG','LOYER_EUROM2','TYPE','YEAR','NOM_DEP','NOM_REGION']]
 
-
     return loyers_df
 
 def load_geojson(df):
@@ -100,3 +99,40 @@ def load_geojsoncommune(df):
 
 def load_school_data():
     return pd.read_csv('datacsv/adresses_ecoles.csv')
+
+def load_wellbeing_data():
+    #Well-being data frame construction
+    wellbeing_df=pd.read_csv(os.path.join(root_path,"filecsv","oecd_wellbeing.csv"),encoding='utf-8',delimiter=';',decimal=',')
+    wellbeing_df=wellbeing_df[wellbeing_df['Country']=='France']
+    wellbeing_df=wellbeing_df[['Region','Code','Education','Jobs','Income','Safety','Health','Environment','Civic engagement','Accessiblity to services','Housing','Community','Life satisfaction']]
+    #Because the data is in english we need to make the relationships for each region to its name in french
+    eng_french=[['Île-de-France','ILE-DE-FRANCE'],
+                ['Centre - Val de Loire','CENTRE-VAL DE LOIRE'],
+                ['Bourgogne-Franche-Comté','BOURGOGNE-FRANCHE-COMTE'],
+                ['Normandy','NORMANDIE'],
+                ['Hauts-de-France','HAUTS-DE-FRANCE'],
+                ['Grand Est','GRAND EST'],
+                ['Pays de la Loire','PAYS DE LA LOIRE'],
+                ['Brittany','BRETAGNE'],
+                ['Nouvelle-Aquitaine','NOUVELLE-AQUITAINE'],
+                ['Auvergne-Rhône-Alpes','AUVERGNE-RHONE-ALPES'],
+                ['Provence-Alpes-Côte d’Azur',"PROVENCE-ALPES-COTE D'AZUR"],
+                ['Guadeloupe','GUADELOUPE'],
+                ['Martinique','MARTINIQUE'],
+                ['French Guiana','GUYANE'],
+                ['La Réunion','LA REUNION'],
+                ['Corsica','CORSE'],
+                ['Occitanie','OCCITANIE']]
+    eng_french=pd.DataFrame(eng_french,columns=['NOM_ENG','NOM_REGION'])
+    eng_french=eng_french.rename(columns={'NOM_ENG':'Region'})
+    wellbeing_df=wellbeing_df.merge(eng_french,on=['Region'])
+    wellbeing_df=wellbeing_df.rename(columns={'Education':'EDUCATION','Jobs':'TRAVAIL','Income':'REVENUS','Safety':'SECURITE','Health':'SANTE','Community':'COMMUNAUTE','Life satisfaction':'QUALITE DE VIE'})
+    wellbeing_df=wellbeing_df[['NOM_REGION','EDUCATION','TRAVAIL','REVENUS','SECURITE','SANTE','COMMUNAUTE','QUALITE DE VIE']]
+    
+    wellbeing_df=wellbeing_df.replace(',', '.', regex=True)
+    wellbeing_df=wellbeing_df.replace('..', 0)
+    # Convert each note in a float type
+    for col in wellbeing_df:
+        if col != 'NOM_REGION':
+            wellbeing_df[col]= wellbeing_df[col].astype(float)
+    return wellbeing_df
