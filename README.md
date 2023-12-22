@@ -1,4 +1,4 @@
-![MapRentingPrice2](https://github.com/vale-asmat/PythonProject/assets/115636552/cfb1bd0b-21ba-4ef1-ade6-7e4dc85eb7f5)## Description
+## Description
 
 This is a project that shows the renting price of housing in France.
 
