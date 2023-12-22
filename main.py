@@ -305,11 +305,19 @@ def update_map(year_map,type_map,dep_map):
     for dep in subset['DEP'].unique():
             row=[dep,subset[subset['DEP']==dep]['LOYER_EUROM2'].mean(),subset[subset['DEP']==dep]['NOM_REGION'].unique()[0]]
             dep_list.append(row)
+    #Center of france
+    lat=46.227638
+    lon=2.213749
+    #Center of DOM
+    if ((dep_map=='971') | (dep_map=='972') | (dep_map=='973') | (dep_map=='974') | (dep_map=='976')):
+        lat=subset['LAT_CENTRE'].mean()
+        lon=subset['LON_CENTRE'].mean()
+    
     dep_df=pd.DataFrame(dep_list,columns=['DEP','LOYER_EUROM2','NOM_REGION'])
     fig = px.choropleth_mapbox(dep_df
                                 , geojson=geojsondata, color='LOYER_EUROM2',
                             locations='DEP', featureidkey="properties.code",
-                            center={"lat": 46.227638, "lon": 2.213749},
+                            center={"lat": lat, "lon": lon},
                             range_color=(0,20),
                             hover_data=['LOYER_EUROM2','DEP','NOM_REGION'],
                             labels={"LOYER_EUROM2":"Loyer x m2 en euros","DEP":"Département","NOM_REGION":"Région"},
