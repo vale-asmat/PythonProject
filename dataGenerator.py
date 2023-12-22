@@ -77,6 +77,16 @@ def generate_data():
     loyers_df=loyers_df.rename(columns={'loypredm2':'LOYER_EUROM2','LIBGEO':'NOM'})
     loyers_df=loyers_df[['NOM','INSEE','DEP','REG','LOYER_EUROM2','TYPE','YEAR','NOM_DEP','NOM_REGION']]
 
+    # Load the geographical center of departments
+    geo_df=pd.read_csv(os.path.join(root_path,"filecsv","georef-france-region@public.csv"),encoding='utf-8',delimiter=';')
+    geo_df[['LAT_CENTRE', 'LON_CENTRE']] = geo_df['Geo Point'].str.split(', ', expand=True)
+    geo_df=geo_df[['Code Officiel Courant Région','LAT_CENTRE', 'LON_CENTRE']]
+    geo_df=geo_df.rename(columns={'Code Officiel Courant Région':'REG'})
+    geo_df['LAT_CENTRE']=geo_df['LAT_CENTRE'].astype(float)
+    geo_df['LON_CENTRE']=geo_df['LON_CENTRE'].astype(float)
+    loyers_df=loyers_df.merge(geo_df,on=['REG'])
+
+
     return loyers_df
 
 def load_geojson(df):
