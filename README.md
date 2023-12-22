@@ -26,14 +26,17 @@ Follow these steps to install  the project:
 ## Pages
 
 - ⭐ Home :
-      ![HomePage](https://github.com/vale-asmat/PythonProject/assets/115636552/68c77d5d-4ad8-415f-8e44-17730591fed6)
+      ![HomePage](https://github.com/vale-asmat/PythonProject/assets/115636552/c7298f4e-069c-4737-b831-ccee190a4034)
+
 - 🌍 Map of the pricing :
-    ![MapRentingPrice](https://github.com/vale-asmat/PythonProject/assets/115636552/12a0bc5a-aeed-4bc5-8014-cfeebe46197e)
-    ![MapRentingPrice2](https://github.com/vale-asmat/PythonProject/assets/115636552/58bad106-d3bb-4dc8-92a9-e16489c65366)
+      ![MapRentingPrice](https://github.com/vale-asmat/PythonProject/assets/115636552/433d914b-f380-4e35-a8de-aa37b2d5c114)
+      ![MapRentingPrice2](https://github.com/vale-asmat/PythonProject/assets/115636552/8bf27c21-b064-4e2d-8cae-348ccb0fe6cf)
+    
 - 📊 Histogram :
-      
+      ![Histogram](https://github.com/vale-asmat/PythonProject/assets/115636552/97e830f9-17bf-4836-bd57-4352257ae4fe)
+
 - 🔍 Comparator by region :
-    ![Comparator](https://github.com/vale-asmat/PythonProject/assets/115636552/ade8c26e-088e-4d61-947b-5493efd30ecf)
+      ![Comparator](https://github.com/vale-asmat/PythonProject/assets/115636552/ca672ae1-dac6-414b-80b3-42c63a4071dd)
 
 ## Sources
 
