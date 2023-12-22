@@ -42,3 +42,4 @@ Follow these steps to install  the project:
 - [Prix des loyers par commune en France en 2022](https://www.data.gouv.fr/fr/datasets/carte-des-loyers-indicateurs-de-loyers-dannonce-par-commune-en-2022/#/resources)
 - [Liste des régions de France](https://www.insee.fr/fr/information/3363419#titre-bloc-26)
 - [Note sur de paramètres de qualité de vie](https://www.oecdregionalwellbeing.org/FRH.html)
+- [Centres géographiques des régions](https://data.opendatasoft.com/explore/dataset/georef-france-region%40public/export/?disjunctive.reg_name)
