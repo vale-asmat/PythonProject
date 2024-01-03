@@ -8,8 +8,7 @@ Follow these steps to install  the project:
 
 1. Clone the repository : `git clone https://github.com/vale-asmat/PythonProject.git`
 2. Go in the path of the downloaded repository<br>
-3. Create the environment :<br><br>
-
+3. Create the environment :<br>
     On Mac OS: `python3 -m venv venv` and
     Activate the environment : `source venv/bin/activate`<br>
 
@@ -17,12 +16,13 @@ Follow these steps to install  the project:
     Activate the environment : `venv\Scripts\activate`<br>
 
 4. Install dependencies : `python -m pip install -r requirements.txt`
-
-5. Launch python file named `python main.py`
+   On Mac OS: `python3 -m pip install -r requirements.txt`
+   On Windows: `python -m pip install -r requirements.txt`
+6. Launch python file named `python main.py`
    On Mac OS: `python3 main.py`
    On Windows: `python main.py`
 
-6. Access the dashboard at `http://127.0.0.1:8050/`
+7. Access the dashboard at `http://127.0.0.1:8050/`
 
 
 ## Pages
