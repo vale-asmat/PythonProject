@@ -13,7 +13,7 @@ Follow these steps to install  the project:
     On Mac OS: `python3 -m venv venv`
     Activate the environment : `source venv/bin/activate`<br>
 
-    On Windows: `python -m venv venv`
+    On Windows: `python -m venv PythonProject/venv`
     Activate the environment : `venv\Scripts\activate`<br>
 
 3. Install dependencies : `python -m pip install -r requirements.txt`
