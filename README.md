@@ -18,7 +18,7 @@ Follow these steps to install  the project:
 4. Install dependencies :<br><br>
    On Mac OS: `python3 -m pip install -r requirements.txt`<br><br>
    On Windows: `python -m pip install -r requirements.txt`<br><br>
-6. Launch python file named `python main.py`<br><br>
+6. Launch python file named `main.py`<br><br>
    On Mac OS: `python3 main.py`<br><br>
    On Windows: `python main.py`<br><br>
 
