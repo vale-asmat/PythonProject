@@ -10,10 +10,10 @@ Follow these steps to install  the project:
 2. Go in the path of the downloaded repository<br>
 3. Create the environment :<br><br>
 
-    On Mac OS: `python3 -m venv venv`
+    On Mac OS: `python3 -m venv venv` and
     Activate the environment : `source venv/bin/activate`<br>
 
-    On Windows: `python -m venv venv`
+    On Windows: `python -m venv venv` and
     Activate the environment : `venv\Scripts\activate`<br>
 
 4. Install dependencies : `python -m pip install -r requirements.txt`
