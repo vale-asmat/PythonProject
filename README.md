@@ -19,6 +19,8 @@ Follow these steps to install  the project:
 4. Install dependencies : `python -m pip install -r requirements.txt`
 
 5. Launch python file named `python main.py`
+   On Mac OS: `python3 main.py`
+   On Windows: `python main.py`
 
 6. Access the dashboard at `http://127.0.0.1:8050/`
 
