@@ -7,20 +7,20 @@ This is a project that shows the renting price of housing in France.
 Follow these steps to install  the project:
 
 1. Clone the repository : `git clone https://github.com/vale-asmat/PythonProject.git`
-2. Create the environment :<br><br>
-
+2. Go to the path where you downloaded the repository<br>
+3. Create the environment :<br><br>
 
     On Mac OS: `python3 -m venv venv`
     Activate the environment : `source venv/bin/activate`<br>
 
-    On Windows: `python -m venv PythonProject/venv`
+    On Windows: `python -m venv venv`
     Activate the environment : `venv\Scripts\activate`<br>
 
-3. Install dependencies : `python -m pip install -r requirements.txt`
+4. Install dependencies : `python -m pip install -r requirements.txt`
 
-4. Launch python file named `main.py`
+5. Launch python file named `main.py`
 
-5. Access the dashboard at `http://127.0.0.1:8050/`
+6. Access the dashboard at `http://127.0.0.1:8050/`
 
 
 ## Pages
