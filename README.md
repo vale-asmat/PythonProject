@@ -15,12 +15,12 @@ Follow these steps to install  the project:
     On Windows: `python -m venv venv` and
     Activate the environment : `venv\Scripts\activate`<br>
 
-4. Install dependencies : `python -m pip install -r requirements.txt`
-   On Mac OS: `python3 -m pip install -r requirements.txt`
-   On Windows: `python -m pip install -r requirements.txt`
-6. Launch python file named `python main.py`
-   On Mac OS: `python3 main.py`
-   On Windows: `python main.py`
+4. Install dependencies : `python -m pip install -r requirements.txt`<br>
+   On Mac OS: `python3 -m pip install -r requirements.txt`<br>
+   On Windows: `python -m pip install -r requirements.txt`<br>
+6. Launch python file named `python main.py`<br>
+   On Mac OS: `python3 main.py`<br>
+   On Windows: `python main.py`<br>
 
 7. Access the dashboard at `http://127.0.0.1:8050/`
 
