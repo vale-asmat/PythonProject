@@ -15,7 +15,7 @@ Follow these steps to install  the project:
     On Windows: `python -m venv venv` and
     Activate the environment : `venv\Scripts\activate`<br>
 
-4. Install dependencies : `python -m pip install -r requirements.txt`<br>
+4. Install dependencies :<br>
    On Mac OS: `python3 -m pip install -r requirements.txt`<br>
    On Windows: `python -m pip install -r requirements.txt`<br>
 6. Launch python file named `python main.py`<br>
