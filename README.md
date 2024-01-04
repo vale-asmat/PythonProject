@@ -2,6 +2,9 @@
 
 This is a project that shows the renting price of housing in France.
 
+Created by Valeriat Asmat And Chen Michel
+ESIEE Paris E3FI 2023
+
 ## Getting Started
 
 Follow these steps to install  the project:
