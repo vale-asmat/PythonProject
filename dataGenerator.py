@@ -10,6 +10,7 @@ import sys
 
 # Extracting the year of a string and output the string
 def extract_year(input_string):
+    '''extracting the date of the string and it to a dictionnary'''
     # Define a regular expression pattern for a year (four digits)
     pattern = re.compile(r'(\d{4})')
 
@@ -107,10 +108,8 @@ def load_geojsoncommune(df):
         
     return geojsondata
 
-def load_school_data():
-    return pd.read_csv('datacsv/adresses_ecoles.csv')
-
 def load_wellbeing_data():
+    '''Well-being data frame construction'''
     #Well-being data frame construction
     wellbeing_df=pd.read_csv(os.path.join(root_path,"filecsv","oecd_wellbeing.csv"),encoding='utf-8',delimiter=';',decimal=',')
     wellbeing_df=wellbeing_df[wellbeing_df['Country']=='France']
