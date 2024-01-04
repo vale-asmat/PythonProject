@@ -12,7 +12,6 @@ from dash import callback_context
 loyers_df = dataGenerator.generate_data()
 geojsondata = dataGenerator.load_geojson(loyers_df)
 geojsondatacommune = dataGenerator.load_geojsoncommune(loyers_df)
-ecole_df = dataGenerator.load_school_data()
 wellbeing_df=dataGenerator.load_wellbeing_data()
 
 # Initialize the Dash lib
